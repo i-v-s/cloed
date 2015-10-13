@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title> Cloed </title>
+		<script type="text/javascript">
+		function save()
+		{
+			var xmlhttp = new XMLHttpRequest();
+			var fn = document.getElementById("fn").value;
+			xmlhttp.open('PUT', '/user/' + fn, true);
+			xmlhttp.onreadystatechange = function() 
+			{
+  				if (xmlhttp.readyState == 4) 
+  				{
+     				if(xmlhttp.status == 200) 
+     				{
+       					alert(xmlhttp.responseText);
+         			}
+  				}
+  			}
+  			var data = '<!DOCTYPE html>\n <html>';
+  			data += document.head.outerHTML + '\n';
+  			data += document.body.outerHTML;
+  			data += '\n</html>';
+			xmlhttp.send(data);
+		}
+
+
+		</script>
+	</head>
+	<body>
+		<div> Hello </div>
+		<input id="fn" type="text" value="1.html">
+		<button onclick="save()"> Save </button>
+	</body>
+</html>
