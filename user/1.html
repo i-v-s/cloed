@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+ <html><head>
+		<title> Clo 3 ed </title>
+		<script type="text/javascript">
+                function tog(n)
+                {
+                  var t = document.getElementById(n);
+                  t.hidden = !t.hidden;
+                }
+                function run(i, n, r)
+                {
+                  var t = document.getElementById(n);
+                  var js = t.textContent;
+                  document.getElementById(r).textContent = eval(js);
+                }
+		function save()
+		{
+			var xmlhttp = new XMLHttpRequest();
+			var fn = document.getElementById("fn").value;
+			xmlhttp.open('PUT', '/user/' + fn, true);
+			xmlhttp.onreadystatechange = function() 
+			{
+  				if (xmlhttp.readyState == 4) 
+  				{
+     				if(xmlhttp.status == 200) 
+     				{
+       					alert(xmlhttp.responseText);
+         			}
+  				}
+  			}
+  			var data = '<!DOCTYPE html>\n <html>';
+  			data += document.head.outerHTML + '\n';
+  			data += document.body.outerHTML;
+  			data += '\n</html>';
+			xmlhttp.send(data);
+		}
+
+
+		</script>
+	<style type="text/css">
+body
+{
+  margin:0;
+}
+.bar
+{
+  /*position: absolute;
+  z-index: 10;*/
+  background-color: #F1D859;
+  margin: 0;
+  width: 100%;
+}
+
+</style><style type="text/css"></style><style type="text/css"></style><style type="text/css"></style><style type="text/css"></style></head>
+<body>
+		<div class="top bar">bar
+  <button onclick="tog('headEd')"> Header </button></div>
+<div> Hello </div>
+		<input id="fn" type="text" value="1.html">
+		<button onclick="save()"> Save </button>
+<div id="headEd" hidden=""> 
+  head:
+  <textarea id="head" style="margin: 0px; width: 561px; height: 335px;"></textarea><script>
+  var header = document.getElementById("head");
+  header.value = document.head.innerHTML;
+  header.onchange = function() 
+  {
+  	document.head.innerHTML = header.value;
+  };
+</script>
+</div><div id="in" onkeyup="run('in', 'js', 'res')" contenteditable=""> 56 </div>
+
+<div id="js" class="js" onkeyup="run('in', 'js', 'res')" contenteditable="">5+7</div>
+<div id="res">12</div>
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

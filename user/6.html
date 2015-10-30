@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+ <html><head>
+		<title> Clo 3 ed </title>
+                <script type="text/javascript">
+		function save()
+		{
+			var xmlhttp = new XMLHttpRequest();
+			var fn = document.getElementById("fn").value;
+			xmlhttp.open('PUT', '/user/' + fn, true);
+			xmlhttp.onreadystatechange = function() 
+			{
+  				if (xmlhttp.readyState == 4) 
+  				{
+     				if(xmlhttp.status == 200) 
+     				{
+       					alert(xmlhttp.responseText);
+         			}
+  				}
+  			}
+  			var data = '<!DOCTYPE html>\n <html>';
+  			data += document.head.outerHTML + '\n';
+  			data += document.body.outerHTML;
+  			data += '\n</html>';
+			xmlhttp.send(data);
+		}
+                </script>
+		<script type="text/javascript">
+                'use strict';
+                function tog(n)
+                {
+                  var t = document.getElementById(n);
+                  t.hidden = !t.hidden;
+                }
+                function newWatch()
+                {
+                  var sel = document.getSelection(), bn = sel.baseNode;
+                  if(bn !== sel.extentNode) return;
+                  var bo = sel.baseOffset, eo = sel.extentOffset;
+                  var text = bn.textContent;
+                  var p = bn.parentElement;
+                  bn.textContent = text.substr(eo);
+                  var span = document.createElement('span');
+                  span.className = 'watch';
+                  span.textContent = text.substr(bo, eo - bo);
+                  p.insertBefore(span, bn);
+                  var tn = document.createTextNode(text.substr(0, bo));
+                  p.insertBefore(tn, span);
+
+                }
+                function run(i, n, r)
+                {
+                  var map = [];
+                  function track(v, p)
+                  {
+                    var tc = map[p].textContent;
+                    if(tc) tc += ', ' + v;
+                    else tc = '// ' + v;
+                    map[p].textContent = tc;
+                    return v;
+                  }
+                  function scanjs(n)
+                  {
+                    var js = '';
+                    if(n.classList.contains('result'))
+                    {
+                      //n.parentElement.removeChild(n);
+                      return '';
+                    }
+                    for(var x = 0; x < n.childNodes.length; x++)
+                    {
+                      var c = n.childNodes[x];
+                      if(c instanceof Text) js += c.textContent;
+                      else js += scanjs(c);
+                    }
+                    if(n.classList.contains('watch'))
+                    {
+                       js = 'track((' + js + '), ' + map.length +')';
+                       var pe = n.parentElement;
+                       var last = pe.children[pe.children.length - 1], d;
+                       if(last.className === 'result') 
+                       {
+                         d = last;
+                         d.textContent = '';
+                       }
+                       else
+                       {
+                         var d = document.createElement('div');
+                         d.className = 'result';
+                         pe.appendChild(d);
+                       }
+                       map.push(d);
+                    }
+                    return js;
+                  }
+                  var t = document.getElementById(n);
+                  var js = scanjs(t);
+                  document.getElementById(r).textContent = eval(js);
+                }
+		</script>
+	<style type="text/css">
+body
+{
+  margin: 0;
+  font-family: courier;
+}
+.bar
+{
+  /*position: absolute;
+  z-index: 10;*/
+  background-color: #F1D859;
+  margin: 0;
+  padding: 5px;
+  width: 100%;
+}
+
+.top.bar div
+{
+  display: inline-block;
+}
+
+.palette
+{
+  margin:10px;
+  padding: 5px;
+  background-color: #ECAF63;
+}
+
+.block, .entry, .watch
+{
+  padding: 2px;
+  border-radius: 3px;
+}
+
+.block
+{
+  background-color: rgba(157, 230, 102, 0.31);
+}
+
+.entry
+{
+  background-color: #F5C338;
+}
+
+.result
+{
+    display: inline-block;
+    color: cadetblue;
+    /*position: absolute;
+    z-index = 10;*/
+    /*background-color: rgba(61, 100, 150, 0.5);*/
+    /*top: 20px;
+    left: 100%;*/
+    border-radius: 3px;
+}
+
+.watch
+{
+  background-color: #92DCD5;
+}
+
+.workArea
+{
+  padding: 10px;
+}
+</style></head>
+<body>
+		<div class="top bar">bar
+  <button onclick="tog('headEd')"> Header </button>
+<div id="palette" class="palette"> 
+  <div class="block" draggable="true"> Блок </div>
+  <div class="entry" draggable="true"> Вход </div>
+  <span class="watch" draggable="true" onclick="newWatch()"> Просмотр </span>
+</div>
+<script>
+  var palette = document.getElementById("palette");
+  palette.ondragstart = function(e)
+  {
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', e.srcElement.outerHTML);
+  };
+  
+</script></div>
+<div> Hello </div>
+		<input id="fn" type="text" value="6.html">
+		<button onclick="save()"> Save </button>
+<div id="headEd" hidden=""> 
+  head:
+  <textarea id="head" style="margin: 0px; width: 756px; height: 336px;"></textarea><script>
+  var header = document.getElementById("head");
+  header.value = document.head.innerHTML;
+  header.onchange = function() 
+  {
+  	document.head.innerHTML = header.value;
+  };
+</script>
+</div><div id="workArea" class="workArea">
+  <div id="in" onkeyup="run('in', 'js', 'res')" contenteditable=""> 56 </div>
+<div id="js" class="js" onkeyup="run('in', 'js', 'res')" contenteditable=""><div class="block" draggable="true">var pi = 0;<div class="result">// 7</div></div><div class="block" draggable="true">for(var t = 1; t &lt; 50; t += 4)</div><div class="block" draggable="true">{</div><div class="block" draggable="true">&nbsp;<span class="watch" draggable="true">t</span>;<div class="result">// 1, 5, 9, 13, 17, 21, 25, 29, 33, 37, 41, 45, 49</div></div><div class="block" draggable="true"></div><div class="block" draggable="true">&nbsp;pi += <span class="watch">1 / t - 1 / (t + 2)</span>;<div class="result">// 0.6666666666666667, 0.05714285714285716, 0.020202020202020193, 0.010256410256410262, 0.006191950464396287, 0.0041407867494824, 0.002962962962962966, 0.0022246941045606233, 0.0017316017316017333, 0.0013860013860013884, 0.0011344299489506535, 0.0009456264775413725, 0.0008003201280512191</div></div><div class="block" draggable="true">&nbsp; <span class="watch">pi*4</span>;<div class="result">// 2.666666666666667, 2.8952380952380956, 2.9760461760461765, 3.0170718170718174, 3.0418396189294024, 3.058402765927332, 3.0702546177791836, 3.079153394197426, 3.086079801123833, 3.0916238066678385, 3.096161526463641, 3.0999440323738066, 3.1031453128860114</div></div><div class="block" draggable="true">}</div><div class="block" draggable="true">pi * 4;</div></div><div id="res">3.1031453128860114</div></div>
+<script>
+  var workArea = document.getElementById('workArea');
+  workArea.ondragover = function(e)
+  {
+    e.preventDefault();
+  }
+  workArea.ondrop = function(e)
+  {
+    if(e.stopPropagation)
+      e.stopPropagation(); // Stops some browsers from redirecting.
+    var x = e.offsetX / 10;
+    var ht = e.target.innerHTML, tg = e.dataTransfer.getData('text/html');
+    ht = ht.substr(0, x) + tg + ht.substr(x);
+    e.target.innerHTML = ht;
+  }  
+</script>
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

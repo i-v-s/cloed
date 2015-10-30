@@ -81,7 +81,7 @@ app.get('/list', list)
 app.put('/user/:name', raw, save); // Сохранить проект 
 app.get('/', index);
 
-var port = 8080;//config.get('express:port');
+var port = 80;//config.get('express:port');
 app.listen(port, function()
 {
     //log.info('Application listen port', port);
